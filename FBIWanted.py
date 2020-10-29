@@ -8,15 +8,15 @@ import requests, json, pickle, os, sys, datetime
 from enum import Enum
 MAX_PAGE_SIZE = 50
 
-#https://api.fbi.gov/@wanted
-class WantedFBI:
+class FBIWanted():
 
         databaseFile = ""
         totalOfEntries = 0
         FBI_DATA = []
 
-        def __init__(self, databaseFile):
+        def __init__(self, databaseFile, updateDB):
                 self.databaseFile = databaseFile
+                self.updateDB = updateDB
                 self.totalOfEntries = self.getTotalEntries()
                 self.entryParser = self.EntryParser(None)
                 print("[%] FBI entry count " + str(self.totalOfEntries))
@@ -54,13 +54,17 @@ class WantedFBI:
                 print("[...] Collecting FBI data...")
                 self.FBI_DATA.clear()
 
+                # If we force to update the file.
+                if self.updateDB == True:
+                        print("[...] Outdated FBI database! Downloading now...")
+                        os.remove(self.databaseFile)
+
                 # Check if the database already is stored locally.
                 if self.checkLocalDBFile() == True:
 
                         print("[...] Reading database from file...")
 
                         # Get the database from the file.
-
                         try:
                                 with open(self.databaseFile, 'rb') as fp:
                                         self.FBI_DATA = pickle.load(fp)
@@ -76,7 +80,7 @@ class WantedFBI:
                                 os.remove(self.databaseFile)
                                 return self.getAllEntriesFromList()
 
-                        print("[!] Database file succesfully updated!")
+                        print("[!] Database file '%s' succesfully updated!" % self.databaseFile)
                         self.entryParser = self.EntryParser(self.FBI_DATA)
                         return True
 
@@ -105,7 +109,7 @@ class WantedFBI:
                 with open(self.databaseFile, 'wb') as fp:
                         pickle.dump(self.FBI_DATA, fp)
 
-                print("[!] Database file succesfully updated!")
+                print("[!] Database file '%s' succesfully updated!" % self.databaseFile)
                 self.entryParser = self.EntryParser(self.FBI_DATA)
                 return True
 
@@ -180,8 +184,21 @@ class WantedFBI:
                 # Get the entry based on subject.
                 def getSubjectEntries(self, subject):
                         
-                        print("[...] Searching for entries with '" + subject.value + "'\n")
+                        # Check if subject exists.
+                        exists = False
+                        for subj in self.Subject:
+                                if str(subj) == subject:
+                                        subject = subj
+                                        exists = True
+                                        break
+                                
+                        if exists == False:
+                                print("[!] The given subject "+ subject + " does not exists!")
+                                return
 
+
+                        print("[...] Searching for subject entries with '" + subject.value + "'\n")
+                       
                         for i in range (0, len(self.FBI_DATA)):
 
                                 person = self.FBI_DATA[i]
@@ -219,6 +236,37 @@ class WantedFBI:
                                         if alias.upper().find(title.upper()) != -1:
                                                 self.printProfile(person)
 
+                def getBountyEntries(self):
+                        print("[...] Searching for entries with a bounty\n")
+
+
+                        counter = 0
+                        for i in range(0, len(self.FBI_DATA)):
+
+                                person = self.FBI_DATA[i]
+
+                                if person['reward_text'] != None:
+                                        self.printProfile(person)
+                                        counter +=1
+
+                        print("\nFound %d entries!" % counter)
+
+                def getProfileByID(self, ID):
+
+                        print("[...] Searching profile with ID %s" % ID)
+
+                        for i in range(0, len(self.FBI_DATA)):
+                                person = self.FBI_DATA[i]
+
+                                if person['@id'] == ID:
+                                        self.printProfile(person)
+                                        return
+                                elif person['@id'][person['@id'].rfind('/') +1:] == ID:
+                                        self.printProfile(person)
+                                        return
+
+                        print("[!] Profile ID not found in database!\n")
+
                 # Get the important information about this person.
                 def printProfile(self, person):
                         
@@ -229,7 +277,7 @@ class WantedFBI:
                         if person['reward_text'] != None:
                                 print("BOUNTY:\t\t%s" % person['reward_text'])
 
-                        print("ID:\t\t%s " % person['@id'])
+                        print("ID:\t\t%s  %s" % (person['@id'][person['@id'].rfind('/') +1:], person['@id']))
                         print("Public since:\t%s" % datetime.datetime.strptime(person['publication'], "%Y-%m-%dT%H:%M:%S"))
 
                         if person['modified'] != None:
@@ -298,11 +346,11 @@ class WantedFBI:
                                 print("Caution: \n\n%s" % person['caution'])
                         print()
 
-FBI_DB = WantedFBI('databaseFBI.csv')
-if FBI_DB.getAllEntriesFromList() == False:
-        sys.exit(1)
+#FBI_DB = WantedFBI('databaseFBI.csv')
+#if FBI_DB.getAllEntriesFromList() == False:
+        #sys.exit(1)
 
-FBI_DB.entryParser.getEntryOnTitle("palmer")
+#FBI_DB.entryParser.getEntryOnTitle("palmer")
 
 #FBI_DB.entryParser.listAllSubjects()
 
