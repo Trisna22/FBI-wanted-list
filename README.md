@@ -11,7 +11,7 @@ the data will be stored until the remote database is updated. In the list we hav
 a subject, the reason why the person is wanted. The title gives usually the name of the person.  
 
 The possible subjects are:
-''' Python
+``` Python
 [0 ] Subject.CYBER_MOST_WANTED                     Cyber's Most Wanted
 [1 ] Subject.SEEKING_INFO                          Seeking Information
 [2 ] Subject.SEEKING_INFO_TERRORISM                Seeking Information - Terrorism
@@ -39,4 +39,28 @@ The possible subjects are:
 [24] Subject.CRIMES_AGAINST_CHILDREN               Crimes Against Children
 [25] Subject.KNOWN_BANK_ROBBERS                    Known Bank Robbers
 [26] Subject.DOMESTIC_TERRORISM                    Domestic Terrorism
-'''
+```
+
+## Script
+In the script I created you can search for subjects, names (title), bounties and id.
+
+## Usage
+```
+Usage: main.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -t TITLE, --title=TITLE
+                        search for title
+  -s SUBJECT, --subjects=SUBJECT
+                        search for subject
+  -f FILENAME, --file=FILENAME
+                        the database file to use
+  -u, --update          update the database file
+  -l, --list-subjects   lists all subjects
+  -n, --list-subjectnums
+                        list subjects with count of entries
+  -a, --list-all        lists all profiles
+  -b, --bounty          lists all profiles with a reward
+  -i ID, --id=ID        print profile based on id
+```
