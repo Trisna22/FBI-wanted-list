@@ -254,9 +254,10 @@ class WantedFBI:
                         if person['scars_and_marks'] != None:
                                 print("  Scars/marks: %s" % person['scars_and_marks'])
 
-                        if person['dates_of_birth_used'] != None:
-                                for birth in person['dates_of_birth_used']:
-                                        print("  Birth:       %s" % birth)
+                        if person['images'] != None:
+                                print("  Image count: %d" % len(person['images']))
+ 
+
                         print()
 
                         # More information about the person.
@@ -266,8 +267,20 @@ class WantedFBI:
                                 for occupation in person['occupations']:
                                         print("Occupation:\t%s" % occupation)
 
+                        if person['dates_of_birth_used'] != None:
+                                for birth in person['dates_of_birth_used']:
+                                        print("Birth:\t\t%s" % birth)
+
+                        if person['place_of_birth'] != None:
+                                print("Place birth:\t%s" % person['place_of_birth'])
+
+
                         if person['nationality'] != None:
                                 print("Nationality:\t%s" % person['nationality'])
+
+                        if person['possible_countries'] != None:
+                                for country in person['possible_countries']:
+                                        print("Pot. country:\t%s" % country)
 
                         print("Subjects:\t", end="")
                         if person['subjects'] != None:
@@ -285,13 +298,11 @@ class WantedFBI:
                                 print("Caution: \n\n%s" % person['caution'])
                         print()
 
-
-
 FBI_DB = WantedFBI('databaseFBI.csv')
 if FBI_DB.getAllEntriesFromList() == False:
         sys.exit(1)
 
-FBI_DB.entryParser.getEntryOnTitle("ali")
+FBI_DB.entryParser.getEntryOnTitle("palmer")
 
 #FBI_DB.entryParser.listAllSubjects()
 
