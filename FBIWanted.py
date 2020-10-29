@@ -4,7 +4,7 @@
 # Name:		FBIWantedList.py
 # Description:	Handles FBI database file/API calls.
 
-import requests, json, pickle, os, sys
+import requests, json, pickle, os, sys, datetime
 from enum import Enum
 MAX_PAGE_SIZE = 50
 
@@ -135,14 +135,19 @@ class WantedFBI:
                         ECAP = "ECAP"
                         JOHN_DOE = "John Doe"
                         PARENTAL_KIDNAPPING = "Parental Kidnapping"
+                        PARENTAL_KIDNAPPING_VICTIM = "Parental Kidnapping Victim"
                         CHINA_THREAT = "China Threat"
                         LAW_ENFORCEMENT_ASSISTANCE = "Law Enforcement Assistance"
                         OPERATION_LEGEND = "Operation Legend"
                         TEN_MOST_WANTED =  "Ten Most Wanted Fugitives"
                         MOST_WANTED_TERRORISTS = "Most Wanted Terrorists"
                         COUNTERINTELLIGENCE = "Counterintelligence"
-        
+                        HUMAN_TRAFFICKING = "Human Trafficking"
+                        CRIMES_AGAINST_CHILDREN = "Crimes Against Children"
+                        KNOWN_BANK_ROBBERS = "Known Bank Robbers"
+                        DOMESTIC_TERRORISM = "Domestic Terrorism"
 
+                # Lists all the available subjects to search for.
                 def listAllSubjects(self):
 
                         print("[!] All Subjects listed:\n")
@@ -152,6 +157,7 @@ class WantedFBI:
                                 counter += 1
                         print()
 
+                # Get count of cases per subject.
                 def getEntryCountPerSubject(self):
 
                         print("[!] Entry count for every subject:\n")
@@ -191,16 +197,106 @@ class WantedFBI:
                                         if person['subjects'][j] == subject.value:
                                                 print(self.FBI_DATA[i]['title'])
 
-                
+                # Get entry based on title.
+                def getEntryOnTitle(self, title):
+
+                        print("[...] Searching for title '" + title + "'\n")
+
+                        for i in range(0, len(self.FBI_DATA)):
+
+                                person = self.FBI_DATA[i]
+
+                                # Check if title corresponds.
+                                if person['title'].upper().find(title.upper()) != -1:
+                                        self.printProfile(person)
+                                        continue
+
+                                # Find title in alias
+                                if person['aliases'] == None:
+                                        continue
+
+                                for alias in person['aliases']:
+                                        if alias.upper().find(title.upper()) != -1:
+                                                self.printProfile(person)
+
+                # Get the important information about this person.
+                def printProfile(self, person):
+                        
+                        print("]]]]]]  %s  [[[[[[" % person['title'])
+                        if person['warning_message'] != None:
+                                print("WARNING:\t%s " % person['warning_message'])
+
+                        if person['reward_text'] != None:
+                                print("BOUNTY:\t\t%s" % person['reward_text'])
+
+                        print("ID:\t\t%s " % person['@id'])
+                        print("Public since:\t%s" % datetime.datetime.strptime(person['publication'], "%Y-%m-%dT%H:%M:%S"))
+
+                        if person['modified'] != None:
+                                print("Modified:\t%s" % person['modified'])
+
+                        if person['aliases'] != None:
+                                for alias in person['aliases']:
+                                        print("Alias:\t\t%s" % alias)
+
+                        # Information about himself
+                        print("Description:")
+                        print("  Sex:         %s" % person['sex'] )
+                        print("  Hair:        %s" % person['hair'])
+                        print("  Eyes:        %s" % person['eyes'])
+                        print("  Weight:      %s" % person['weight'])
+                        print("  Weight max:  %s" % person['weight_max'])
+                        print("  Race:        %s" % person['race_raw'])
+                        print("  Age:         %s" % person['age_range'])
+                        print("  Min height:  %s" % person['height_min'])
+                        print("  Max height:  %s" % person['height_max'])
+
+                        if person['scars_and_marks'] != None:
+                                print("  Scars/marks: %s" % person['scars_and_marks'])
+
+                        if person['dates_of_birth_used'] != None:
+                                for birth in person['dates_of_birth_used']:
+                                        print("  Birth:       %s" % birth)
+                        print()
+
+                        # More information about the person.
+                        print("Additional information:")
+                        
+                        if person['occupations'] != None:
+                                for occupation in person['occupations']:
+                                        print("Occupation:\t%s" % occupation)
+
+                        if person['nationality'] != None:
+                                print("Nationality:\t%s" % person['nationality'])
+
+                        print("Subjects:\t", end="")
+                        if person['subjects'] != None:
+                                for subject in person['subjects']:
+                                        print("%s | " % subject, end="")
+                                print()
+
+                        if person['remarks'] != None:
+                                print("Remarks:\t%s" % person['remarks'])
+
+                        if person['details'] != None:
+                                print("Details:\t%d bytes" % len(person['details']))
+
+                        if person['caution'] != None:
+                                print("Caution: \n\n%s" % person['caution'])
+                        print()
+
+
 
 FBI_DB = WantedFBI('databaseFBI.csv')
 if FBI_DB.getAllEntriesFromList() == False:
         sys.exit(1)
 
-FBI_DB.entryParser.listAllSubjects()
+FBI_DB.entryParser.getEntryOnTitle("ali")
 
-FBI_DB.entryParser.getEntryCountPerSubject()
+#FBI_DB.entryParser.listAllSubjects()
 
-#FBI_DB.entryParser.getSubjectEntries(FBI_DB.entryParser.Subject.MOST_WANTED_TERRORISTS)
+#BI_DB.entryParser.getEntryCountPerSubject()
+
+#FBI_DB.entryParser.getSubjectEntries(FBI_DB.entryParser.Subject.TEN_MOST_WANTED)
 
 #print(FBI_DB.entryParser.Subject.MISSING_PERSON)
