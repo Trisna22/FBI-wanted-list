@@ -11,7 +11,7 @@ the data will be stored until the remote database is updated. In the list we hav
 a subject, the reason why the person is wanted. The title gives usually the name of the person.  
 
 The possible subjects are:
-``` Python
+```
 [0 ] Subject.CYBER_MOST_WANTED                     Cyber's Most Wanted
 [1 ] Subject.SEEKING_INFO                          Seeking Information
 [2 ] Subject.SEEKING_INFO_TERRORISM                Seeking Information - Terrorism
