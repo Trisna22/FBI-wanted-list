@@ -6,9 +6,6 @@
 
 import requests, json, pickle, os, sys
 from enum import Enum
-
-import EntryParser
-
 MAX_PAGE_SIZE = 50
 
 #https://api.fbi.gov/@wanted
@@ -123,30 +120,87 @@ class WantedFBI:
 
                 class Subject(Enum):
                         CYBER_MOST_WANTED = "Cyber's Most Wanted"
-                        SEEKING_INFO = 2
-                        WHITE_COLLAR_CRIME = 3
-                        MISSING_PERSON = 4
-                        KIDNAPPING_MISSING_PERSON = 5
-                        VIOLENT_CRIME_MURDER = 6
-                        VIOLENT_CRIME_OTHER = 7
+                        SEEKING_INFO = "Seeking Information"
+                        SEEKING_INFO_TERRORISM = "Seeking Information - Terrorism"
+                        WHITE_COLLAR_CRIME = "White-Collar Crime"
+                        VICAP_HOMICIDE_SEXUAL_ASSAULT = "ViCAP Homicides and Sexual Assaults"
+                        VICAP_MISSING_PERSON = "ViCAP Missing Persons"
+                        VICAP_UNIDENTIFIED_PERSONS = "ViCAP Unidentified Persons"
+                        KIDNAPPING_MISSING_PERSON = "Kidnappings and Missing Persons"
+                        ENDANGERED_CHILD_PROGRAM = "Endangered Child Alert Program"
+                        VIOLENT_CRIME_MURDER = "Violent Crimes - Murders"
+                        VIOLENT_CRIME_OTHER = "Additional Violent Crimes"
+                        CASE_OF_WEEK = "Case of the Week"
+                        CRIMINAL_ENTERPRISE_INVESTIGATION = "Criminal Enterprise Investigations"
+                        ECAP = "ECAP"
+                        JOHN_DOE = "John Doe"
+                        PARENTAL_KIDNAPPING = "Parental Kidnapping"
+                        CHINA_THREAT = "China Threat"
+                        LAW_ENFORCEMENT_ASSISTANCE = "Law Enforcement Assistance"
+                        OPERATION_LEGEND = "Operation Legend"
+                        TEN_MOST_WANTED =  "Ten Most Wanted Fugitives"
+                        MOST_WANTED_TERRORISTS = "Most Wanted Terrorists"
+                        COUNTERINTELLIGENCE = "Counterintelligence"
+        
+
+                def listAllSubjects(self):
+
+                        print("[!] All Subjects listed:\n")
+                        counter = 0
+                        for Subj in (self.Subject):
+                                print("[%-2d] %-45s %s" % (counter, str(Subj), Subj.value))
+                                counter += 1
+                        print()
+
+                def getEntryCountPerSubject(self):
+
+                        print("[!] Entry count for every subject:\n")
+
+                        totalCount = 0
+                        for Subj in (self.Subject):
+
+                                counter = 0
+                                for i in range(0, len(self.FBI_DATA)):
+                                        person = self.FBI_DATA[i]
+                                        
+                                        for j in range(0, len(person['subjects'])):
+                                                if person['subjects'][j] == Subj.value:
+                                                        counter += 1
+                                print("%-40s %d" % (Subj.value, counter))
+                                totalCount += counter
+
+                        print("\nTotal of " + str(totalCount) + " entries.\n")
 
                 # Get the entry based on subject.
                 def getSubjectEntries(self, subject):
                         
-                        print(subject.value)
+                        print("[...] Searching for entries with '" + subject.value + "'\n")
 
                         for i in range (0, len(self.FBI_DATA)):
 
-                                if self.FBI_DATA[i]['subjects'][0] == subject.value:
-                                        print("CYBER: " + self.FBI_DATA[i]['title'])
+                                person = self.FBI_DATA[i]
+
+                                # If an person has no subject.
+                                if len(person['subjects']) == 0:
+                                        continue
+
+                                # Iterate over all subjects from person.
+                                for j in range(0, len(person['subjects'])):
+                                        
+                                        # Match the subjects.
+                                        if person['subjects'][j] == subject.value:
+                                                print(self.FBI_DATA[i]['title'])
+
+                
 
 FBI_DB = WantedFBI('databaseFBI.csv')
 if FBI_DB.getAllEntriesFromList() == False:
         sys.exit(1)
 
+FBI_DB.entryParser.listAllSubjects()
 
-#FBI_DB.entryParser.getSubjectEntries(FBI_DB.entryParser.Subject.CYBER_MOST_WANTED.value)
+FBI_DB.entryParser.getEntryCountPerSubject()
 
-FBI_DB.entryParser.getSubjectEntries(FBI_DB.entryParser.Subject.CYBER_MOST_WANTED)
+#FBI_DB.entryParser.getSubjectEntries(FBI_DB.entryParser.Subject.MOST_WANTED_TERRORISTS)
 
 #print(FBI_DB.entryParser.Subject.MISSING_PERSON)
