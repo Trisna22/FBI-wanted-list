@@ -41,6 +41,9 @@ The possible subjects are:
 [26] Subject.DOMESTIC_TERRORISM                    Domestic Terrorism
 ```
 
+## Screenshot
+![Screenshot](https://github.com/Trisna22/FBI-wanted-list/blob/main/screenshot.png)
+
 ## Script
 In the script I created you can search for subjects, names (title), bounties and id.
 
