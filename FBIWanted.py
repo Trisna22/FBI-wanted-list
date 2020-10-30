@@ -122,6 +122,7 @@ class FBIWanted():
                 def __init__(self, FBI_DATA):
                         self.FBI_DATA = FBI_DATA
 
+                # All possible subjects.
                 class Subject(Enum):
                         CYBER_MOST_WANTED = "Cyber's Most Wanted"
                         SEEKING_INFO = "Seeking Information"
@@ -150,6 +151,7 @@ class FBIWanted():
                         CRIMES_AGAINST_CHILDREN = "Crimes Against Children"
                         KNOWN_BANK_ROBBERS = "Known Bank Robbers"
                         DOMESTIC_TERRORISM = "Domestic Terrorism"
+                        OTHER = "Other unlisted subjects"
 
                 # Lists all the available subjects to search for.
                 def listAllSubjects(self):
@@ -236,6 +238,7 @@ class FBIWanted():
                                         if alias.upper().find(title.upper()) != -1:
                                                 self.printProfile(person)
 
+                # Get entries with a bounty.
                 def getBountyEntries(self):
                         print("[...] Searching for entries with a bounty\n")
 
@@ -251,6 +254,7 @@ class FBIWanted():
 
                         print("\nFound %d entries!" % counter)
 
+                # Get the profile with the ID.
                 def getProfileByID(self, ID):
 
                         print("[...] Searching profile with ID %s" % ID)
@@ -267,6 +271,21 @@ class FBIWanted():
 
                         print("[!] Profile ID not found in database!\n")
 
+                # The sorting function.
+                def sortingOnDateTime(self, e):
+                        return datetime.datetime.strptime(e['publication'], "%Y-%m-%dT%H:%M:%S")
+                
+                # Get the latest records
+                def getLatestRecords(self):
+
+                        print("[...] Get the latest profiles")        
+                        
+                        # Sort from high to low.
+                        self.FBI_DATA.sort(reverse=True, key=self.sortingOnDateTime)
+
+                        for i in range(0, 5):
+                                print(self.printProfile(self.FBI_DATA[i]))
+
                 # Get the important information about this person.
                 def printProfile(self, person):
                         
@@ -281,7 +300,7 @@ class FBIWanted():
                         print("Public since:\t%s" % datetime.datetime.strptime(person['publication'], "%Y-%m-%dT%H:%M:%S"))
 
                         if person['modified'] != None:
-                                print("Modified:\t%s" % person['modified'])
+                                print("Modified:\t%s" % datetime.datetime.strptime(person['modified'], "%Y-%m-%dT%H:%M:%S+00:00"))
 
                         if person['aliases'] != None:
                                 for alias in person['aliases']:

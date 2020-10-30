@@ -13,6 +13,7 @@ parser.add_option("-n", "--list-subjectnums", help="list subjects with count of 
 parser.add_option("-a", "--list-all", help="lists all profiles", dest="LIST_ALL", action="store_true", default=False)
 parser.add_option("-b", "--bounty", help="lists all profiles with a reward", dest="BOUNTY", action="store_true", default=False)
 parser.add_option("-i", "--id", help="print profile based on id", dest="ID", default=None)
+parser.add_option("-d", "--latest", help="get the latest records", dest="LATEST", action="store_true", default=False)
 
 (options, args) = parser.parse_args()
 
@@ -34,6 +35,10 @@ if options.BOUNTY == True:
         wanted.entryParser.getBountyEntries()
         sys.exit(0)
 
+if options.LATEST == True:
+        wanted.entryParser.getLatestRecords()
+        sys.exit(0)
+
 if options.SUBJECT != None:
         wanted.entryParser.getSubjectEntries(options.SUBJECT)
         sys.exit(0)
@@ -45,5 +50,6 @@ if options.TITLE != None:
 if options.ID != None:
         wanted.entryParser.getProfileByID(options.ID)
         sys.exit(0)
+
 
 print("No action given!\n")
