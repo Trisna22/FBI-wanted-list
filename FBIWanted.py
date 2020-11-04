@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # Author:	ramb0
-# Name:		FBIWantedList.py
+# Name:		FBIWanted.py
 # Description:	Handles FBI database file/API calls.
 
 import requests, json, pickle, os, sys, datetime
@@ -113,9 +113,6 @@ class FBIWanted():
                 self.entryParser = self.EntryParser(self.FBI_DATA)
                 return True
 
-        def getSubjectEntries(self):
-                print(EntryParser.Subject().CYBER_MOST_WANTED)
-                
         # Parses the entries by their specifications.
         class EntryParser:
 
@@ -214,7 +211,8 @@ class FBIWanted():
                                         
                                         # Match the subjects.
                                         if person['subjects'][j] == subject.value:
-                                                print(self.FBI_DATA[i]['title'])
+                                                ID = person['@id'][person['@id'].rfind('/') +1:]
+                                                print("%-30s %s" % (self.FBI_DATA[i]['title'], ID))
 
                 # Get entry based on title.
                 def getEntryOnTitle(self, title):
@@ -274,21 +272,55 @@ class FBIWanted():
                 # The sorting function.
                 def sortingOnDateTime(self, e):
                         return datetime.datetime.strptime(e['publication'], "%Y-%m-%dT%H:%M:%S")
-                
+
                 # Get the latest records
                 def getLatestRecords(self):
 
-                        print("[...] Get the latest profiles")        
-                        
+                        print("[...] Get the latest profiles")
+
                         # Sort from high to low.
                         self.FBI_DATA.sort(reverse=True, key=self.sortingOnDateTime)
 
                         for i in range(0, 5):
                                 print(self.printProfile(self.FBI_DATA[i]))
 
+                # Get the pictures from an ID.
+                def getPictureByID(self, ID):
+                        print("[...] Get the links of the pictures from a profile\n")
+
+                        # Get the profile object from the list.
+                        personProfile = ""
+                        for i in range(0, len(self.FBI_DATA)):
+                                person = self.FBI_DATA[i]
+
+                                if person['@id'] == ID:
+                                        personProfile = person
+                                        break
+                                elif person['@id'][person['@id'].rfind('/') +1:] == ID:
+                                        personProfile = person
+                                        break
+                        if personProfile == "":
+                                print("[!] Profile ID not detected!\n")
+                                return
+
+                        for i in range(0, len(personProfile['images'])):
+                                
+                                if personProfile['images'][i]['caption'] != None:
+                                        print("Caption: " + personProfile['images'][i]['caption'])
+                                
+                                if personProfile['images'][i]['original'] != None:
+                                        print("Original: " + personProfile['images'][i]['original'])
+                                
+                                if personProfile['images'][i]['thumb'] != None:
+                                        print("Thumbnail: " + personProfile['images'][i]['thumb'])
+                                
+                                if personProfile['images'][i]['large'] != None:
+                                        print("Large: " + personProfile['images'][i]['large'])
+                                print()
+                                
                 # Get the important information about this person.
                 def printProfile(self, person):
-                        
+
                         print("]]]]]]  %s  [[[[[[" % person['title'])
                         if person['warning_message'] != None:
                                 print("WARNING:\t%s " % person['warning_message'])
