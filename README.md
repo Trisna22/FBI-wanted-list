@@ -54,7 +54,7 @@ In the script I created you can search for subjects, names (title), bounties and
 In the GUI you can also search for subjects, names (title), publication/modification dates and more. We used the tkinter libary in python3.
 
 ## Screenshot from GUI 
-![Screenshot](https://Trisna22/FBI-wanted-list/blob/main/screenshot_GUI.png)
+![Screenshot](https://github.com/Trisna22/FBI-wanted-list/blob/main/screenshot_GUI.png)
 
 ## Usage
 ```
