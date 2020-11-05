@@ -1,6 +1,9 @@
 # FBI-wanted-list
 I found a API from the FBI, where you can see the list of people they are searching for. I tought it was cool if I created a tool that interacts with this API. We can search for names and prices on people's head.
 
+## Project structure
+The scripts can be runned in an terminal window, but there is also an GUI version in the GUI map.
+
 ## How it works
 The API receives a few objects: 'total','items','page'. Here the total object gives the count of 
 entries of the list. In the items object we have to actual data of the persons in the list and the
