@@ -5,13 +5,12 @@ I found an API from the FBI, where you can see the list of people they are searc
 The scripts can be runned in an terminal window, but there is also an GUI version in the GUI map.
 
 ## How it works
-The API receives a few objects: 'total','items','page'. Here the total object gives the count of 
-entries of the list. In the items object we have to actual data of the persons in the list and the
-page gives the pagenumber, like in a book.  
+From the API you receive a few objects: 'total','items','page'. Here the total object, gives the count of 
+entries of the list. In the items object, we have the actual data of the persons in the list and the
+page object gives the pagenumber, like in a book.  
 
 The script first requests the data from the FBI API and stores it into a local file. This is where
-the data will be stored until the remote database is updated. In the list we have for every person
-a subject, the reason why the person is wanted. The title gives usually the name of the person.  
+the data will be stored until the remote database is updated. In the list we have an list of objects that represents the person, the object also contains information about the person's appearance or the reason why the person is wanted. The title usually gives the name of the person.  
 
 The possible subjects are:
 ```
