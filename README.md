@@ -47,6 +47,9 @@ The possible subjects are:
 ## Script
 In the script I created you can search for subjects, names (title), bounties and id.
 
+## Graphical User Interface
+In the GUI you can also search for subjects, names (title), publication/modification dates and more. We used the tkinter libary in python3.
+
 ## Usage
 ```
 Usage: main.py [options]
