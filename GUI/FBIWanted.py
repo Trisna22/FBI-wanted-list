@@ -141,8 +141,60 @@ class FBIWanted:
 
                 return json.loads(response.content)['items']
 
+
         def getFBIData(self):
                 return self.FBI_DATA
+                
+        # Get the person's records based on ID.
+        def getPersonByID(self, ID):
+                
+                # Loop trough records.
+                for i in range(0, len(self.FBI_DATA)):
+                        person = self.FBI_DATA[i]
+
+                        if person['@id'] == ID:
+                                return {'code':1, 'person':person}
+
+                        elif person['@id'][person['@id'].rfind('/') +1:] == ID:
+                                return {'code':1, 'person':person}
+
+                return {'code':0, 'reason':'ID not found in database!'}
+
+        # Writes an image of the ID to a file.
+        def __writeToFile(self, url, ID):
+
+                # Check if the image file already exists.
+                if os.path.exists(ID + ".orig"):
+                        return True
+
+                # Download the file from database.
+                if not self.__checkIfConnectionAvailable():
+                        return False
+
+                try:
+                        r = requests.get(url)
+                        with open(ID + ".orig", "wb") as f:
+                                f.write(r.content)
+
+                        return True
+                except:
+                        return False
+
+        # Get the person's picture based on ID.
+        def getPictureByID(self, ID):
+
+                # To prevent too much network usage, we're gonna save the files.
+                for i in range(0, len(self.FBI_DATA)):
+                        person = self.FBI_DATA[i]
+
+                        if person['@id'][person['@id'].rfind('/') +1:] == ID:
+                                if self.__writeToFile(person['images'][0]['original'], ID) == False:
+                                        return {'code': 0, 'reason':'Failed to download the image from database!'}
+                                else:
+                                        return {'code': 1, 'fileName': ID + ".orig"}
+
+                return {'code':0, 'reason':'ID not found in database!'}
+
 
         def getCriminalWithID(self, ID):
 
