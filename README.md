@@ -44,14 +44,17 @@ The possible subjects are:
 [26] Subject.DOMESTIC_TERRORISM                    Domestic Terrorism
 ```
 
-## Screenshot
-![Screenshot](https://github.com/Trisna22/FBI-wanted-list/blob/main/screenshot.png)
+## Screenshot from console output
+![Screenshot](https://github.com/Trisna22/FBI-wanted-list/blob/main/screenshot_console.png)
 
 ## Script
 In the script I created you can search for subjects, names (title), bounties and id.
 
 ## Graphical User Interface
 In the GUI you can also search for subjects, names (title), publication/modification dates and more. We used the tkinter libary in python3.
+
+## Screenshot from GUI 
+![Screenshot](https://Trisna22/FBI-wanted-list/blob/main/screenshot_GUI.png)
 
 ## Usage
 ```
